@@ -1,0 +1,99 @@
+<html>
+    <head>
+        <title>Chat at chatroom</title>
+        <link rel="stylesheet" href="../css/roomstyle.css">
+        <script
+			  src="https://code.jquery.com/jquery-3.2.1.js"
+			  integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+			  crossorigin="anonymous"></script>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+           
+           $(function(){
+
+            var host   = '{{config.host}}';
+            var message = io.connect(host + '/messages');
+            var roomNum = '{{room_number}}';
+            var userName= '{{user.fullname}}';
+            var userpic= '{{user.profilePic}}';
+
+               message.on('connect', function(){
+            console.log('Connection Established !');
+            message.emit('join',{room:roomNum,user:userName,userpic:userpic})
+		})
+
+		  
+	
+
+		   $(document).on('keyup','.newmessage',function(e){
+
+			if(e.which === 13 && $(this).val()!=''){
+                     message.emit('newMessage',{
+
+						room:roomNum,
+						user:userName,
+						userpic:userpic,
+						message:$(this).val()
+					 })
+
+				updatemessage(userpic,$(this).val());
+				$(this).val('');
+			}
+
+		   })
+
+
+		   message.on('messagefeed',function(dats){
+
+			  var msgx= JSON.parse(data);
+			  updatemessage(msgx.userpic,msgx.message);
+
+		   })
+
+
+		   function updatemessage(userpic,message){
+
+			var str = '<li>';
+				str += '<div class="msgbox">';
+				str +=	'<div class="pic"><img src="' + userpic + '"></div>';
+				str +=	'<div class="msg"><p>' + message + '</p></div>';
+				str +=	'</div>';
+				str += '</li>';
+			$(str).hide().prependTo($('.messages')).slideDown(100);
+			 
+		   }
+
+		    })
+
+            </script>
+    </head>
+      
+    <body>
+<div class="rm-container">
+		<h1 class="rm-title">ChatCAT</h1>
+		<div class="rm-userbox">
+			<img src="{{user.profilePic}}" class="userPic">
+			<h3 class="userName">{{user.fullname}} | <a href="/logout">Logout</a><a href="/chatroom">More Chatrooms</a></h3>
+		</div>
+		<div class="rm-roomname">
+			<h5>{{room_name}}</h5>
+		</div>
+		<div class="rm-messages">
+			<ul class="messages">
+				   
+			</ul>
+		</div>
+		<div class="rm-users">
+			<ul class="users">
+
+			</ul>
+		</div>
+		<div class="rm-newmessage">
+			<input type="text" class="newmessage" autocomplete="off" placeholder="Type in your message and press enter !">
+
+		</div>
+	</div>
+</body>
+</html>
+

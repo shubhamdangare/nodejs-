@@ -1,0 +1,12 @@
+{
+
+"dbURL":"mongodb://chaton:shubham@96@ds145293.mlab.com:45293/chaton",
+"sessionSecret":"kjasdkjdasjkjkdsa",
+"fb":{
+
+    "appID":"1725875277717738",
+    "appSecret":"eecff771266ade6c800813b0491e5451",
+    "callbackURL":"http://localhost:3000/auth/facebook/callback"
+},
+"host":"http://localhost:3000"
+}
